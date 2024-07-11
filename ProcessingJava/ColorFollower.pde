@@ -131,49 +131,10 @@ void draw() {
     
     if(pixelsX.size() >= 10 && pixelsY.size() == pixelsX.size() )
     {
-      int _x = pixelsX.toArray()[pixelsX.size()-1] - pixelsX.toArray()[0];
-      int _y = pixelsY.toArray()[pixelsY.size()-1] - pixelsY.toArray()[0];
-      //commandSent = String.format("+7;%s-",str(degreesY));
-      //myPort.write(commandSent);
+      //int _x = pixelsX.toArray()[pixelsX.size()-1] - pixelsX.toArray()[0];
+      //int _y = pixelsY.toArray()[pixelsY.size()-1] - pixelsY.toArray()[0];
       commandSent = String.format("{%s;%s;%s}",str((int)avgX),str((int)avgY),str(1));
       myPort.write(commandSent);
-      
-
-      
-      
-
-        // Scale the mouseX value from 0 to 640 to a range between 0 and 175
-      
-      //commandSent = String.format("+6;%x-",degrees);
-      //myPort.write(commandSent);
-
-      /*
-      //X movement
-      if(_x > pixelsThreshold)
-      {
-         s = "Derecha";
-         myPort.write(String.format("+2;%x-",(int) Math.abs(_x/4)));
-      }
-      else if(_x < -pixelsThreshold)
-      {
-        s = "Izquierda";
-       
-        myPort.write(String.format("+1;%x-",(int) Math.abs(_x/4)));
-      }
-      else
-      {
-        s = "";
-      } 
-      //Y movement
-      if(_y > pixelsThreshold)
-      {
-         myPort.write(String.format("+4;%x-",(int) Math.abs(_y/4.5)));
-      }
-      else if(_y < -pixelsThreshold)
-      {
-        myPort.write(String.format("+3;%x-",(int) Math.abs(_y/4.5)));
-      }
-      */
       pixelsX.clear();  
       pixelsY.clear(); 
   }
@@ -183,9 +144,8 @@ void draw() {
         fill(color(255));
 
       text("Valor x" + str((int)avgX) + " Grados: " + str(degreesY) + "command sent: " + commandSent, 660, 220, 280, 250);
-  fill(color(255));
-      text(
-    "Sentido " + s + " ; " + distance, 660, 320, 280, 250);
+      fill(color(255));
+      text("Sentido " + s + " ; " + distance, 660, 320, 280, 250);
     
     
 }
@@ -234,25 +194,5 @@ float distSq(float x1, float y1, float z1, float x2, float y2, float z2) {
 }
 void mousePressed() {
     int loc = mouseX + mouseY * tmpKinect.getVideoImage().width;
-    /*
-    int depth = tmpKinect.getRawDepth()[loc];
-    if(vStart == null)
-    {
-      vStart = new PVector(mouseX, mouseY, depth);
-    }
-    else if(vEnd == null)
-    {
-      vEnd = new PVector(mouseX, mouseY, depth);
-    }
-    else
-    {
-      distance = str(PVector.dist(vEnd, vStart));
-      vEnd = null;
-      vStart = null;
-    }
-    */
-    // Save color where the mouse is clicked in trackColor variable
-    
-    
     trackColor = tmpKinect.getVideoImage().pixels[loc];
 }
