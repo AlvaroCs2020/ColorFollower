@@ -16,7 +16,7 @@ int height  = 480;
 int minAngleX = 55;
 int maxAngleX = 120;
 
-int minAngleY = 45;
+int minAngleY = 40;
 int maxAngleY = 90;
 Servo myservo;  // create servo object to control a servo
 Servo myservo2;  // create servo object to control a servo
@@ -88,7 +88,7 @@ void loop() {
 void mapCoordinatesToAngles(int x, int y, int z)
 {
   int newAngle = map(x, 0, width, maxAngleX, minAngleX) ;
-  int newAngle2 = map(y, 0, width, maxAngleY, minAngleY);
+  int newAngle2 = map(y, 0, height, maxAngleY, minAngleY);
   
   current_angle =  newAngle*0.8 + current_angle *0.2;
   //Serial.println(current_angle);

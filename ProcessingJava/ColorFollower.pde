@@ -8,6 +8,7 @@ boolean colorDepth = false;
 Kinect tmpKinect;
 int numDevices = 0;
 color trackColor = color(0);
+color originalTrackColor = color(0);
 //index to change the current device changes
 int deviceIndex = 0;
 
@@ -72,14 +73,9 @@ void draw() {
                 int loc = x + y * video.width;
                 // What is current color
                 color currentColor = video.pixels[loc];
-                float r1 = red(currentColor);
-                float g1 = green(currentColor);
-                float b1 = blue(currentColor);
-                float r2 = red(trackColor);
-                float g2 = green(trackColor);
-                float b2 = blue(trackColor);
 
-                float d = distSq(r1, g1, b1, r2, g2, b2);
+                float d = distanceBetweenColors(currentColor,trackColor);
+                
                 if (d < deg * deg) {
                     filteredVideo.set(x, y, color(255));
                     avgX += x;
@@ -104,6 +100,19 @@ void draw() {
         
         pixelsX.append((int) avgX);
         pixelsY.append((int) avgY);
+        if (count > 300) //Color correction ondemand
+        {
+          int loc =  (int)avgX + (int)avgY * 640;
+          color currentColor = video.pixels[loc];
+          float d1 = distanceBetweenColors(currentColor,trackColor);
+          float d2 = distanceBetweenColors(currentColor,originalTrackColor);
+          //trackColor = video.pixels[loc]; 
+           if (d1 < deg * deg && d2 < deg * deg) 
+           {
+             trackColor = currentColor; 
+           }
+          //trackColor = video.pixels[loc];
+        }
         
     }
     int i = (int) avgX + (int)avgY * video.width;
@@ -125,9 +134,6 @@ void draw() {
     
     //Hardware and serial stuff
     
-    int degreesX = (int) map(avgX, 0, video.width, 120, 55);
-
-    int degreesY = (int) map(avgY, 0, video.height, 90, 40);
     
     if(pixelsX.size() >= 10 && pixelsY.size() == pixelsX.size() )
     {
@@ -136,14 +142,14 @@ void draw() {
       commandSent = String.format("{%s;%s;%s}",str((int)avgX),str((int)avgY),str(1));
       myPort.write(commandSent);
       pixelsX.clear();  
-      pixelsY.clear(); 
+      pixelsY.clear();
   }
 
       println((int) avgX + " : " + (int)avgY+" --- " + commandSent);
       //println(video.height + " ss " + video.width);
         fill(color(255));
 
-      text("Valor x" + str((int)avgX) + " Grados: " + str(degreesY) + "command sent: " + commandSent, 660, 220, 280, 250);
+      //text("Valor x" + str((int)avgX) + " Grados: " + str(degreesY) + "command sent: " + commandSent, 660, 220, 280, 250);
       fill(color(255));
       text("Sentido " + s + " ; " + distance, 660, 320, 280, 250);
     
@@ -192,7 +198,20 @@ float distSq(float x1, float y1, float z1, float x2, float y2, float z2) {
     float d = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1);
     return d;
 }
+
+float distanceBetweenColors(color first, color second)
+{
+  float r1 = red(first);
+  float g1 = green(first);
+  float b1 = blue(first);
+  float r2 = red(second);
+  float g2 = green(second);
+  float b2 = blue(second);
+  
+  return distSq(r1, g1, b1, r2, g2, b2);
+}
 void mousePressed() {
     int loc = mouseX + mouseY * tmpKinect.getVideoImage().width;
     trackColor = tmpKinect.getVideoImage().pixels[loc];
+    originalTrackColor = trackColor;
 }
